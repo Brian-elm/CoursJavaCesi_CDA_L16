@@ -42,9 +42,9 @@ public class CasseBrique extends Canvas implements KeyListener {
 
         Balle balle = new Balle();
 
+        boolean pause = true;
 
-
-        while(true){
+        while(pause){
 
             Graphics2D dessin = (Graphics2D) getBufferStrategy().getDrawGraphics();
 
@@ -61,15 +61,23 @@ public class CasseBrique extends Canvas implements KeyListener {
             balle.testColision();
 
             if ((balle.getPosY() + balle.getDiametre() >= barre.getPosYBarre()) && (balle.getPosX() >= barre.getPosXBarre()) && (balle.getPosX() <= barre.getPosXBarre() + barre.getWidth())) {
-                balle.setPosY(balle.getPosY() - balle.getSpeedY());
-                System.out.println("touché !");
+                balle.setSpeedY(-balle.getSpeedY());
             }
 
+            if (balle.getPosY() == hauteur - balle.getDiametre() * 2){
+                balle.setSpeedX(0);
+                balle.setSpeedY(0);
+                pause = false;
+            }
+
+            if (!pause) {
+                System.out.println("Perdu !");
+            }
             //-----------------------
 
             dessin.dispose();
             getBufferStrategy().show();
-            Thread.sleep(1000 / 60);
+            Thread.sleep(1000 / 30);
         }
 
     }

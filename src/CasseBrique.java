@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class CasseBrique extends Canvas implements KeyListener {
 
@@ -10,7 +11,13 @@ public class CasseBrique extends Canvas implements KeyListener {
     Barre barre = new Barre(250, 630, Color.RED, 120, 10);
     Balle balle = new Balle(50, 200, Color.BLUE, 30, 5, 7);
     Vie vie = new Vie(0, 10, Color.GREEN, 20, 3);
-    Bonus bonus = new Bonus(200, 300, Color.cyan, 50, 20);
+
+
+    // Bonus random
+    Random random = new Random();
+    int x = random.nextInt(largeur - 100 + 1) + 100;
+    int y = random.nextInt(hauteur - 100 + 1) + 100;
+    Bonus bonus = new Bonus(x, y, Color.cyan, 10, 10);
 
     public CasseBrique() throws InterruptedException {
 
@@ -25,6 +32,7 @@ public class CasseBrique extends Canvas implements KeyListener {
         panneau.setVisible(true);
 
         fenetre.setSize(largeur, hauteur);
+        fenetre.setTitle("Casse Brique");
         fenetre.setVisible(true);
         fenetre.setResizable(false);
         fenetre.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -71,13 +79,13 @@ public class CasseBrique extends Canvas implements KeyListener {
             barre.Dessiner(dessin);
             balle.Dessiner(dessin);
             vie.Dessiner(dessin);
-            bonus.Dessiner(dessin);
+            if(!bonus.isBonusCasse()) {
+                bonus.Dessiner(dessin);
+            }
 
             // Dessin brique
             for (Brique brique : TabBrique) {
-                if(!brique.isBriqueCasse()){
-                    brique.Dessiner(dessin);
-                }
+                brique.Dessiner(dessin);
                 // Collision avec les briques
                 if (balle.posX + balle.diametre >= brique.posX && balle.posX <= brique.posX + brique.width
                         && balle.posY + balle.diametre >= brique.posY && balle.posY <= brique.posY + brique.height && !brique.isBriqueCasse()) {
@@ -102,12 +110,10 @@ public class CasseBrique extends Canvas implements KeyListener {
             }
 
             // Collision avec le bonus
-            if (balle.posX + balle.diametre >= bonus.posX && balle.posX <= bonus.posX + bonus.width
-                    && balle.posY + balle.diametre >= bonus.posY && balle.posY <= bonus.posY + bonus.height && !bonus.isBonusCasse()) {
+            if (balle.posX + balle.diametre >= bonus.posX && balle.posX <= bonus.posX + bonus.width && balle.posY + balle.diametre >= bonus.posY && balle.posY <= bonus.posY + bonus.height && !bonus.isBonusCasse()) {
                 balle.setSpeedY(-balle.getSpeedY());
                 bonus.setBonusCasse(true);
-                Balle balle2 = new Balle(50, 200, Color.ORANGE, 30, 5, 7);
-                balle2.Dessiner(dessin);
+                vie.setVie(vie.getVie() + 1);
             }
 
 
@@ -120,6 +126,13 @@ public class CasseBrique extends Canvas implements KeyListener {
             if(vie.getVie() == 0){
                 vivant = false;
                 JOptionPane.showMessageDialog(null, "Perdu !", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
+
+            TabBrique.removeIf(Brique::isBriqueCasse);
+            if(TabBrique.isEmpty()){
+                vivant = false;
+                JOptionPane.showMessageDialog(null, "Bien joué tu as gagné !", "Victoire", JOptionPane.INFORMATION_MESSAGE);
+
             }
         }
 

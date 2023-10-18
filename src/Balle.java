@@ -1,10 +1,16 @@
 import java.awt.*;
 
-public class Balle extends Sprite {
+public class Balle extends Rond implements Deplacable {
 
-    protected int speedX = 5;
-    protected int speedY = 10;
-    protected Color couleur = Color.BLUE;
+    protected int speedX;
+    protected int speedY;
+
+    public Balle(int posX, int posY, Color couleur, int diametre, int speedX, int speedY) {
+        super(posX, posY, couleur, diametre);
+        this.speedX = speedX;
+        this.speedY = speedY;
+    }
+
     public int getDiametre() {
         return diametre;
     }
@@ -76,10 +82,5 @@ public class Balle extends Sprite {
         if(posY >= CasseBrique.hauteur - diametre || posY <= 0){
             speedY = -speedY;
         }
-    }
-
-    public void dessiner(Graphics2D dessin){
-        dessin.setColor(couleur);
-        dessin.fillOval(posX, posY, diametre, diametre);
     }
 }

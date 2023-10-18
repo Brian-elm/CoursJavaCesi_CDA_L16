@@ -2,46 +2,46 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class Barre extends Sprite {
+public class Barre extends Rectangle {
 
-    protected Color couleur = Color.RED;
+    public Barre(int posX, int posY, Color couleur, int largeur, int hauteur) {
+        super(posX, posY, couleur, largeur, hauteur);
+    }
 
-    public int getPosXBarre() {
-        return posXBarre;
+    public int getPosX() {
+        return posX;
+    }
+
+    public int getPosY() {
+        return posY;
     }
 
     public int getWidth(){
         return width;
     }
 
-    public void setPosXBarre(int posXBarre) {
-        this.posXBarre = posXBarre;
-    }
-
-    public int getPosYBarre() {
-        return posYBarre;
+    public void setPosX(int posXBarre) {
+        this.posX = posXBarre;
     }
 
     //Méthode
-    public void dessinerBarre(Graphics2D dessinBarre){
-        dessinBarre.setColor(couleur);
-        dessinBarre.fillRect(posXBarre, posYBarre, width, height);
-    }
 
     public void deplacementGauche(){
-        posXBarre -= 10;
+        testCollisionBarre();
+        posX -= 10;
     }
 
     public void deplacementDroite(){
-        posXBarre += 10;
+        testCollisionBarre();
+        posX += 10;
     }
 
     public void testCollisionBarre(){
-        if(posXBarre >= CasseBrique.largeur - width) {
-            posXBarre -= 10;
+        if(posX >= CasseBrique.largeur - width) {
+            posX -= 10;
         }
-        if(posXBarre <= 0) {
-            posXBarre += 10;
+        if(posX <= 0) {
+            posX += 10;
         }
     }
 }

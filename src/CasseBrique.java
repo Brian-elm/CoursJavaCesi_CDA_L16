@@ -1,11 +1,16 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class CasseBrique extends Canvas implements KeyListener {
 
     public static final int largeur = 500;
     public static final int hauteur = 700;
+    Barre barre = new Barre(250, 630, Color.RED, 120, 10);
+    Balle balle = new Balle(50, 200, Color.BLUE, 30, 5, 7);
+    Vie vie = new Vie(0, 10, Color.GREEN, 20, 3);
+    Bonus bonus = new Bonus(200, 300, Color.cyan, 50, 20);
 
     public CasseBrique() throws InterruptedException {
 
@@ -36,15 +41,25 @@ public class CasseBrique extends Canvas implements KeyListener {
         Demarrer();
     }
 
-    Barre barre = new Barre();
-
     public void Demarrer() throws InterruptedException {
 
-        Balle balle = new Balle();
+        boolean vivant = true;
 
-        boolean pause = true;
+        // Mur de brique
 
-        while(pause){
+        ArrayList<Brique> TabBrique = new ArrayList<Brique>();
+
+        for (int i = 0; i < 3; i++) {
+            int positionX = 20;
+            int positionY = 50 + i * 35;
+
+            for (int ind = 0; positionX + 25 <= this.largeur; ind++) {
+                TabBrique.add(new Brique(positionX, positionY, Color.gray, 25, 25));
+                positionX += 25 + 15;
+            }
+        }
+
+        while(vivant){
 
             Graphics2D dessin = (Graphics2D) getBufferStrategy().getDrawGraphics();
 
@@ -53,32 +68,64 @@ public class CasseBrique extends Canvas implements KeyListener {
             dessin.setColor(Color.WHITE);
             dessin.fillRect(0, 0, largeur, hauteur);
 
-            barre.dessinerBarre(dessin);
-            barre.testCollisionBarre();
+            barre.Dessiner(dessin);
+            balle.Dessiner(dessin);
+            vie.Dessiner(dessin);
+            bonus.Dessiner(dessin);
 
-            balle.dessiner(dessin);
+            // Dessin brique
+            for (Brique brique : TabBrique) {
+                if(!brique.isBriqueCasse()){
+                    brique.Dessiner(dessin);
+                }
+                // Collision avec les briques
+                if (balle.posX + balle.diametre >= brique.posX && balle.posX <= brique.posX + brique.width
+                        && balle.posY + balle.diametre >= brique.posY && balle.posY <= brique.posY + brique.height && !brique.isBriqueCasse()) {
+                    balle.setSpeedY(-balle.getSpeedY());
+                    brique.setBriqueCasse(true);
+                }
+            }
+
             balle.deplacement();
             balle.testColision();
 
-            if ((balle.getPosY() + balle.getDiametre() >= barre.getPosYBarre()) && (balle.getPosX() >= barre.getPosXBarre()) && (balle.getPosX() <= barre.getPosXBarre() + barre.getWidth())) {
+            // Collision avec la barre
+            if ((balle.getPosY() + balle.getDiametre() >= barre.getPosY()) && (balle.getPosX() >= barre.getPosX()) && (balle.getPosX() <= barre.getPosX() + barre.getWidth())) {
                 balle.setSpeedY(-balle.getSpeedY());
             }
 
-            if (balle.getPosY() == hauteur - balle.getDiametre() * 2){
-                balle.setSpeedX(0);
-                balle.setSpeedY(0);
-                pause = false;
+            // Collision avec le bas de la fênetre
+            if (balle.getPosY() >= hauteur - balle.getDiametre()){
+                vie.setVie(vie.getVie() - 1);
+                balle.setPosX(50);
+                balle.setPosY(200);
             }
 
-            if (!pause) {
-                System.out.println("Perdu !");
+            // Collision avec le bonus
+            if (balle.posX + balle.diametre >= bonus.posX && balle.posX <= bonus.posX + bonus.width
+                    && balle.posY + balle.diametre >= bonus.posY && balle.posY <= bonus.posY + bonus.height && !bonus.isBonusCasse()) {
+                balle.setSpeedY(-balle.getSpeedY());
+                bonus.setBonusCasse(true);
+                Balle balle2 = new Balle(50, 200, Color.ORANGE, 30, 5, 7);
+                balle2.Dessiner(dessin);
             }
-            //-----------------------
+
+
+                //-----------------------
 
             dessin.dispose();
             getBufferStrategy().show();
             Thread.sleep(1000 / 30);
+
+            if(vie.getVie() == 0){
+                vivant = false;
+                JOptionPane.showMessageDialog(null, "Perdu !", "Info", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
+
+    }
+
+    public void recommencer(){
 
     }
 

@@ -1,11 +1,40 @@
-public class Sprite {
+import java.awt.*;
 
-    protected int posX = 250;
-    protected int posY = 250;
-    protected int diametre = 30;
-    protected int posXBarre = 250;
-    protected final int posYBarre = 620;
-    protected int width = 100;
-    protected int height = 20;
+public abstract class Sprite {
 
+    protected int posX;
+    protected int posY;
+    protected Color couleur;
+
+    public Sprite(int posX, int posY, Color couleur) {
+        this.posX = posX;
+        this.posY = posY;
+        this.couleur = couleur;
+    }
+
+    public int getPosX() {
+        return posX;
+    }
+
+    public void setPosX(int posX) {
+        this.posX = posX;
+    }
+
+    public int getPosY() {
+        return posY;
+    }
+
+    public void setPosY(int posY) {
+        this.posY = posY;
+    }
+
+    public Color getCouleur() {
+        return couleur;
+    }
+
+    public void setCouleur(Color couleur) {
+        this.couleur = couleur;
+    }
+
+    public abstract void Dessiner(Graphics2D dessin);
 }

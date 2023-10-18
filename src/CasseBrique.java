@@ -6,8 +6,8 @@ import java.util.Random;
 
 public class CasseBrique extends Canvas implements KeyListener {
 
-    public static final int largeur = 500;
-    public static final int hauteur = 700;
+    public static final int largeur = 1280;
+    public static final int hauteur = 720;
     Barre barre = new Barre(250, 630, Color.RED, 120, 10);
     Balle balle = new Balle(50, 200, Color.BLUE, 30, 5, 7);
     Vie vie = new Vie(0, 10, Color.GREEN, 20, 3);
@@ -121,7 +121,7 @@ public class CasseBrique extends Canvas implements KeyListener {
 
             dessin.dispose();
             getBufferStrategy().show();
-            Thread.sleep(1000 / 30);
+            Thread.sleep(1000 / 60);
 
             if(vie.getVie() == 0){
                 vivant = false;
